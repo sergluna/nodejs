@@ -1,2 +1,2 @@
 # nodejs
-Cotinuing my journey in node.js
+Continuing my journey in node.js
