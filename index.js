@@ -1,14 +1,12 @@
-// Loading in packages and the custom module, replaceTemplate
-
 const fs = require("fs");
 const http = require("http");
 const path = require("path");
 const { json } = require("stream/consumers");
 const url = require("url");
 const replaceTemplate = require("./modules/replaceTemplate");
+const slugify = require("slugify");
 
-// Loading the HTML Element Templates
-
+// Loading the HTML Templates
 const tempOverview = fs.readFileSync(
   `${__dirname}/templates/template-overview.html`,
   "utf-8"
@@ -22,15 +20,18 @@ const tempProduct = fs.readFileSync(
   "utf-8"
 );
 
-// Using parse to turn JSON data file into readable information
+// using parse to turn json into readable information
 const data = fs.readFileSync(`${__dirname}/dev-data/data.json`, "utf-8");
 const dataObjct = JSON.parse(data);
+
+const slugs = dataObjct.map((el) => slugify(el.productName, { lower: true }));
+console.log(slugs);
 
 // Creating a server
 const server = http.createServer((req, res) => {
   const { query, pathname } = url.parse(req.url, true);
 
-  // Overview Landing Page Route
+  // Overview Page Route
   if (pathname === "/" || pathname === "/overview") {
     res.writeHead(200, { "Content-type": "text/html" });
     const cardsHtml = dataObjct
@@ -52,7 +53,7 @@ const server = http.createServer((req, res) => {
     res.writeHead(200, { "Content-type": "application/json" });
     res.end(data);
 
-    // Page Not Found Route
+    // Not Found Page
   } else {
     res.writeHead(404, {
       "Content-type": "text/html",
